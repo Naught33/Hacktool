@@ -49,8 +49,26 @@ for /l %%i in (1,1,5) do (
     ping localhost -n 1 >nul
 )
 
-:: Loop to "continue scanning"
+:: Fake device scanning with a 1 in 5 chance of finding a device
 :loop
 echo Checking for more vulnerabilities throughout the network...
 ping localhost -n 3 >nul
+
+set /a deviceFound=!random! %% 5
+if !deviceFound! equ 0 (
+    :: Fake device stats
+    set "deviceName=Device_!random!!random!"
+    set "osVersion=OS_Version_!random!_Patch_!random!"
+    set /a exploitAvailable=!random! %% 2
+    echo Device found: !deviceName!
+    echo OS Version: !osVersion!
+    
+    if !exploitAvailable! equ 0 (
+        echo Exploit available: Yes
+    ) else (
+        echo Exploit available: No
+    )
+    ping localhost -n 3 >nul
+)
+
 goto loop
